@@ -65,9 +65,9 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
   int tamanioGrafo=0,
       tamanioCertificado=0,
       i=0,
-      j=0;
-  int registro[10];
-  int bandera=0;
+      j=0,
+      registro[10],
+      bandera=0;
   *contador+=6;
   for(i=0; i<10; i++){
     *contador+=1;
@@ -88,6 +88,7 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
   }
   for(j=0; j<tamanioCertificado-1; j++){
     *contador+=1;
+    bandera=0;
     for(i=0; i<55; i++){
       *contador+=1;
       if(
@@ -106,7 +107,7 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
       }
     }
     *contador+=1;
-    if(!bandera){
+    if(bandera==0){
       *contador+=2;
       return 0;
     }
