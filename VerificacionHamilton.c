@@ -61,58 +61,72 @@ void imprimirGrafo(GRAFO grafo){
   }
 }
 
-int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado){
+int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
   int tamanioGrafo=0,
       tamanioCertificado=0,
       i=0,
       j=0;
   int registro[10];
   int bandera=0;
+  *contador+=6;
   for(i=0; i<10; i++){
+    *contador+=1;
     registro[i]=0;
   }
-  for(i=0; grafo.nodos[i]!=0; i++);
-  tamanioGrafo=i;
-  for(i=0; certificado.nodo[i]!=0; i++);
-  tamanioCertificado=i;
+  *contador+=1;
+  for(i=0; grafo.nodos[i]!=0; i++); *contador+=i;
+  tamanioGrafo=i; *contador+=1;
+  for(i=0; certificado.nodo[i]!=0; i++); *contador+=i;
+  tamanioCertificado=i; *contador+=1;
   if(tamanioCertificado!=(tamanioGrafo+1)){
+    *contador+=2;
     return 0;
   }
   if(certificado.nodo[0]!=certificado.nodo[tamanioGrafo]){
+    *contador+=2;
     return 0;
   }
   for(j=0; j<tamanioCertificado-1; j++){
+    *contador+=1;
     for(i=0; i<55; i++){
+      *contador+=1;
       if(
         grafo.aristas[i].nodo1==certificado.nodo[j] &&
         grafo.aristas[i].nodo2==certificado.nodo[j+1]
       ){
-        bandera=1;
+        bandera=1; *contador+=2;
         break;
       }
       if(
         grafo.aristas[i].nodo2==certificado.nodo[j] &&
         grafo.aristas[i].nodo1==certificado.nodo[j+1]
       ){
-        bandera=1;
+        bandera=1; *contador+=2;
         break;
       }
     }
+    *contador+=1;
     if(!bandera){
+      *contador+=2;
       return 0;
     }
     if(registro[certificado.nodo[j]-1]==0){
-      registro[certificado.nodo[j]-1]=1;
+      registro[certificado.nodo[j]-1]=1; *contador+=2;
     }
     else{
+      *contador+=2;
       return 0;
     }
   }
+  contador+=1;
   for(i=0; i<tamanioGrafo; i++){
+    contador+=1;
     if(registro[i]==0){
+      contador+=2;
       return 0;
     }
   }
+  contador+=2;
   return 1;
 }
 
@@ -126,9 +140,10 @@ void imprimirCertificado(CERTIFICADO certificado){
 
 int main(void){
   int i=0,
-      j=0;
+      j=0,
+      resultado=0,
+      contador=0;
   char caracter=0;
-  int resultado;
   CERTIFICADO certificado[10];
   GRAFO grafo;
   FILE *fp;
@@ -157,13 +172,15 @@ int main(void){
   fclose(fp);
   for(i=0; certificado[i].nodo[1]!=0; i++){
     printf("Verificando certificado %d\n", i+1);
-    resultado=verificacionHamilton(grafo, certificado[i]);
+    resultado=verificacionHamilton(grafo, certificado[i], &contador);
     imprimirCertificado(certificado[i]);
     if(resultado){
-      printf("Es un ciclo simple hamiltoniano\n\n\n");
+      printf("Es un ciclo simple hamiltoniano\n");
     }
     else{
-      printf("NO Es un ciclo simple hamiltoniano\n\n\n");
+      printf("NO Es un ciclo simple hamiltoniano\n");
     }
+    printf("Número de lineas ejecutadas: %d\n\n\n", contador);
+    contador=0;
   }
 }
