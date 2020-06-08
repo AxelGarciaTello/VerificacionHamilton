@@ -1,6 +1,19 @@
+/*
+Instituto Politecnico Nacional
+Escuela Superior de Cómputo
+Analisis de algoritmos
+Grupo: 3CV2
+Alumnos: Garcia Tello Axel
+		 Rodríguez Acosta Alan
+Profesor: Benjamin Luna Benoso
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Verificación Hamilton
+Fecha: 1 de junio de 2020
+*/
 #include <stdlib.h>
 #include <stdio.h>
 
+//Estructuras del grafo y certificado
 typedef struct arista{
   int nodo1,
       nodo2;
@@ -15,6 +28,7 @@ typedef struct certificado{
   int nodo[25];
 } CERTIFICADO;
 
+//Función para leer un grafo
 void leerGrafo(GRAFO *grafo){
   int i=0;
   char caracter=0;
@@ -50,6 +64,7 @@ void leerGrafo(GRAFO *grafo){
   fclose(fp);
 }
 
+//Función para imprimir el grafo
 void imprimirGrafo(GRAFO grafo){
   int i=0;
   for(i=0; i<10; i++){
@@ -61,6 +76,7 @@ void imprimirGrafo(GRAFO grafo){
   }
 }
 
+//Función para verificar si un certificado es hamiltoniano dado un grafo
 int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
   int tamanioGrafo=0,
       tamanioCertificado=0,
@@ -74,6 +90,7 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
     registro[i]=0;
   }
   *contador+=1;
+  //verificación del tamaño
   for(i=0; grafo.nodos[i]!=0; i++); *contador+=i;
   tamanioGrafo=i; *contador+=1;
   for(i=0; certificado.nodo[i]!=0; i++); *contador+=i;
@@ -82,6 +99,7 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
     *contador+=2;
     return 0;
   }
+  //Verificación de terminar donde inicia el certificado
   if(certificado.nodo[0]!=certificado.nodo[tamanioGrafo]){
     *contador+=2;
     return 0;
@@ -89,6 +107,7 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
   for(j=0; j<tamanioCertificado-1; j++){
     *contador+=1;
     bandera=0;
+    //Checamos que exista una ruta entre los nodos
     for(i=0; i<55; i++){
       *contador+=1;
       if(
@@ -111,6 +130,8 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
       *contador+=2;
       return 0;
     }
+    //Marcamos los nodos por los que pasamos.
+    //Si ya se paso por ese nodo se devuelve un falso
     if(registro[certificado.nodo[j]-1]==0){
       registro[certificado.nodo[j]-1]=1; *contador+=2;
     }
@@ -120,6 +141,7 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
     }
   }
   contador+=1;
+  //Verificamos haber pasado por todos los nodos
   for(i=0; i<tamanioGrafo; i++){
     contador+=1;
     if(registro[i]==0){
@@ -131,6 +153,7 @@ int verificacionHamilton(GRAFO grafo, CERTIFICADO certificado, int *contador){
   return 1;
 }
 
+//Función para imprimir un certificado
 void imprimirCertificado(CERTIFICADO certificado){
   int i=0;
   for(i=0; (certificado.nodo[i])!=0; i++){
@@ -139,6 +162,7 @@ void imprimirCertificado(CERTIFICADO certificado){
   printf("\n");
 }
 
+//Función de inicio del programa
 int main(void){
   int i=0,
       j=0,
@@ -148,7 +172,8 @@ int main(void){
   CERTIFICADO certificado[10];
   GRAFO grafo;
   FILE *fp;
-  leerGrafo(&grafo);
+  leerGrafo(&grafo);  //Lectura del grafo
+  //Lectura del certificado
   for(i=0; i<10; i++){
     for(j=0; j<25; j++){
       certificado[i].nodo[j]=0;
@@ -171,6 +196,7 @@ int main(void){
     }
   }
   fclose(fp);
+  //Revisión de certificados
   for(i=0; certificado[i].nodo[1]!=0; i++){
     printf("Verificando certificado %d\n", i+1);
     resultado=verificacionHamilton(grafo, certificado[i], &contador);
